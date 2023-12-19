@@ -13,13 +13,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+
+import com.revrobotics.AbsoluteEncoder;
+
 import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.
 //import com.ctre.phoenix.sensors.
-import com.ctre.phoenix.sensors.CANCoder;
+/*import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;*/
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,7 +36,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private final CANCoder AbsoluteEncoder = new CANCoder(0);
+  //private final CANCoder AbsoluteEncoder = new CANCoder(0);
   //private WPI_CANCoder CANCoder = new 
 
 
@@ -42,10 +45,10 @@ public class Robot extends TimedRobot {
   private XboxController controller = new XboxController(0);
 
   // Swerve drive
-  private WheelDrive backRight = new WheelDrive(0, 1);
-  private WheelDrive backLeft = new WheelDrive(2, 3);
-  private WheelDrive frontRight = new WheelDrive(4, 5);
-  private WheelDrive frontLeft = new WheelDrive(6, 7);
+  private WheelDrive backRight = new WheelDrive(2, 1,0);
+  private WheelDrive backLeft = new WheelDrive(4, 3,1);
+  private WheelDrive frontRight = new WheelDrive(6, 5,2);
+  private WheelDrive frontLeft = new WheelDrive(8, 7,3);
   private SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
   /**
@@ -58,20 +61,28 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    AbsoluteEncoder.configSensorDirection(false);
+    //AbsoluteEncoder.configSensorDirection(false);
     //AbsoluteEncoder.configAbsoluteSensorRange
-    AbsoluteEncoder.getAbsolutePosition();
+    //AbsoluteEncoder.getAbsolutePosition();
+    backLeft.zeroEncoders();
+    backRight.zeroEncoders();
+    frontLeft.zeroEncoders();
+    frontRight.zeroEncoders();
   }
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
-   *
+   *s
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("AbsoluteEncoder", backRight.returnabsolute());
+    //SmartDashboard.putNumber("backLeft relative encoder", backLeft.returnRelative());
+    SmartDashboard.putNumber("backRight relative encoder", backRight.returnRelative());
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different

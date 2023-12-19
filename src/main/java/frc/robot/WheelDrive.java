@@ -7,20 +7,28 @@ package frc.robot;
 // Angle multiplyer 
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+/* import com.ctre.phoenix.sensors.CANCoder;
 
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;*/
+
+//import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+
 
 /** Add your docs here. */
 public class WheelDrive {
     private CANSparkMax angleMotor;
     private CANSparkMax speedMotor;
+    private RelativeEncoder angleEncoder;
+
     private SparkMaxPIDController m_pidController;
 
-    private CANCoder absoluteEncoder;
+    private AnalogEncoder absoluteEncoder;
+
 
     // PID coefficients
     public double kP = 0.1;
@@ -34,14 +42,16 @@ public class WheelDrive {
    
     
     //consider changing variable names
-    public WheelDrive (int angleMotor, int speedMotor) {
+    public WheelDrive (int angleMotor, int speedMotor, int encoderNumber) {
         
         this.angleMotor = new CANSparkMax(angleMotor, MotorType.kBrushless);
         this.speedMotor = new CANSparkMax(speedMotor, MotorType.kBrushless);
        
         m_pidController = this.angleMotor.getPIDController();
 
-        //this.absoluteEncoder = new 
+        this.angleEncoder = this.angleMotor.getEncoder();
+        //this.angleEncoder.getPositionConversionFactor()
+        this.absoluteEncoder = new AnalogEncoder(encoderNumber);
 
         // set PID coefficients
         m_pidController.setP(kP);
@@ -67,15 +77,24 @@ public class WheelDrive {
     public void drive (double speed, double angle){
         // Sets the speed on the speed motor.
         speedMotor.set(speed);
-        // 
-        angle = angle * 23;
+        angle = angle * 1;
         m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
 
 
     }
 
     public void zeroEncoders(){
+        // private final FeedbackDevice absoluteEncoder = new FeedbackD
+        
+        angleEncoder.setPosition(absoluteEncoder.get());
+    }   
+    
+    public double returnRelative(){
+        return angleEncoder.getPosition();
+    }
 
-    }    
+    public double returnabsolute(){
+        return absoluteEncoder.get();
+    }
 
 }

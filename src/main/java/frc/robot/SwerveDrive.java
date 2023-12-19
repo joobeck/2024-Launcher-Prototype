@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-// Add correct length and width
 // convert angle here to angle elsewhere
 // check SparkMax CAN numbers
 
@@ -15,8 +14,8 @@ public class SwerveDrive {
     private WheelDrive frontRight;
     private WheelDrive frontLeft;
 
-    public final double length = 0;
-    public final double width = 0;
+    public final double length = 27.4;
+    public final double width = 12.25;
 
     // SwerveDrive constructor
     public SwerveDrive (WheelDrive backRight, WheelDrive backLeft, WheelDrive frontRight, WheelDrive frontLeft){

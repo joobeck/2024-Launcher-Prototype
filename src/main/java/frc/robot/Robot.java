@@ -45,10 +45,10 @@ public class Robot extends TimedRobot {
   private XboxController controller = new XboxController(0);
 
   // Swerve drive
-  private WheelDrive backRight = new WheelDrive(2, 1,0);
-  private WheelDrive backLeft = new WheelDrive(4, 3,1);
-  private WheelDrive frontRight = new WheelDrive(6, 5,2);
-  private WheelDrive frontLeft = new WheelDrive(8, 7,3);
+  private WheelDrive backLeft = new WheelDrive(2, 1,0);
+  private WheelDrive backRight = new WheelDrive(4, 3,1);
+  private WheelDrive frontLeft = new WheelDrive(6, 5,2);
+  private WheelDrive frontRight = new WheelDrive(8, 7,3);
   private SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
   /**
@@ -65,9 +65,9 @@ public class Robot extends TimedRobot {
     //AbsoluteEncoder.configAbsoluteSensorRange
     //AbsoluteEncoder.getAbsolutePosition();
     backLeft.zeroEncoders();
-    backRight.zeroEncoders();
+    /*backRight.zeroEncoders();
     frontLeft.zeroEncoders();
-    frontRight.zeroEncoders();
+    frontRight.zeroEncoders();*/
   }
 
   /**
@@ -79,9 +79,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("AbsoluteEncoder", backRight.returnabsolute());
+    SmartDashboard.putNumber("AbsoluteEncoder", backLeft.returnabsolute());
     //SmartDashboard.putNumber("backLeft relative encoder", backLeft.returnRelative());
-    SmartDashboard.putNumber("backRight relative encoder", backRight.returnRelative());
+    SmartDashboard.putNumber("backRight relative encoder", backLeft.returnRelative());
   }
 
   /**

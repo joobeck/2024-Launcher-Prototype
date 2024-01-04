@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 /* import com.ctre.phoenix.sensors.CANCoder;
 
@@ -26,7 +27,7 @@ public class WheelDrive {
     private RelativeEncoder angleEncoder;
 
     private SparkMaxPIDController m_pidController;
-
+    private DutyCycleEncoder driveEncoder;
     private AnalogEncoder absoluteEncoder;
 
 
@@ -50,8 +51,9 @@ public class WheelDrive {
         m_pidController = this.angleMotor.getPIDController();
 
         this.angleEncoder = this.angleMotor.getEncoder();
-        //this.angleEncoder.getPositionConversionFactor()
-        this.absoluteEncoder = new AnalogEncoder(encoderNumber);
+        this.angleEncoder.setPositionConversionFactor(7.0/96);
+        //this.absoluteEncoder = new AnalogEncoder(encoderNumber);
+        this.driveEncoder = new DutyCycleEncoder(encoderNumber);
 
         // set PID coefficients
         m_pidController.setP(kP);
@@ -77,7 +79,7 @@ public class WheelDrive {
     public void drive (double speed, double angle){
         // Sets the speed on the speed motor.
         speedMotor.set(speed);
-        angle = angle * 1;
+        angle = angle *1;
         m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
 
 
@@ -86,7 +88,8 @@ public class WheelDrive {
     public void zeroEncoders(){
         // private final FeedbackDevice absoluteEncoder = new FeedbackD
         
-        angleEncoder.setPosition(absoluteEncoder.get());
+        //angleEncoder.setPosition(absoluteEncoder.getAbsolutePosition());
+        angleEncoder.setPosition(driveEncoder.getAbsolutePosition());
     }   
     
     public double returnRelative(){
@@ -94,7 +97,9 @@ public class WheelDrive {
     }
 
     public double returnabsolute(){
-        return absoluteEncoder.get();
+        return driveEncoder.getAbsolutePosition();
+        //return absoluteEncoder.getAbsolutePosition();
+        
     }
 
 }

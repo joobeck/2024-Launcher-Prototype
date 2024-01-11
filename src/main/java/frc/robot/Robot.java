@@ -47,8 +47,8 @@ public class Robot extends TimedRobot {
   // Swerve drive
   private WheelDrive backLeft = new WheelDrive(2, 1,0);
   private WheelDrive backRight = new WheelDrive(4, 3,1);
-  private WheelDrive frontLeft = new WheelDrive(6, 5,2);
-  private WheelDrive frontRight = new WheelDrive(8, 7,3);
+  private WheelDrive frontLeft = new WheelDrive(8, 7,3);
+  private WheelDrive frontRight = new WheelDrive(6, 5,2);
   private SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
   /**
@@ -64,10 +64,15 @@ public class Robot extends TimedRobot {
     //AbsoluteEncoder.configSensorDirection(false);
     //AbsoluteEncoder.configAbsoluteSensorRange
     //AbsoluteEncoder.getAbsolutePosition();
-    backLeft.zeroEncoders();
-    /*backRight.zeroEncoders();
-    frontLeft.zeroEncoders();
-    frontRight.zeroEncoders();*/
+    
+    /*backRight.zeroEncoders(0.3389);
+    backLeft.zeroEncoders(0.7695);
+    frontRight.zeroEncoders(0.0614);
+    frontLeft.zeroEncoders(0.8470);*/
+    frontRight.invertDriveMotor(false);
+    frontLeft.invertDriveMotor(true);
+    backRight.invertDriveMotor(false);
+    backLeft.invertDriveMotor(true);
   }
 
   /**
@@ -79,9 +84,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("AbsoluteEncoder", backLeft.returnabsolute());
-    //SmartDashboard.putNumber("backLeft relative encoder", backLeft.returnRelative());
-    SmartDashboard.putNumber("backRight relative encoder", backLeft.returnRelative());
+    SmartDashboard.putNumber("backLeft relative encoder", backLeft.returnRelative());
+    SmartDashboard.putNumber("backRight relative encoder", backRight.returnRelative());
+    SmartDashboard.putNumber("frontLeft relative encoder", frontRight.returnRelative());
+    SmartDashboard.putNumber("frontRight relative encoder", frontLeft.returnRelative());
+    SmartDashboard.putNumber("backLeft AbsoluteEncoder", backLeft.returnabsolute());
+    SmartDashboard.putNumber("backRight AbsoluteEncoder", backRight.returnabsolute());
+    SmartDashboard.putNumber("frontLeft AbsoluteEncoder", frontLeft.returnabsolute());
+    SmartDashboard.putNumber("frontRight AbsoluteEncoder", frontRight.returnabsolute());
   }
 
   /**
@@ -122,7 +132,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX());
+  swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX());
   }
 
   /** This function is called once when the robot is disabled. */

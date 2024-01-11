@@ -28,13 +28,13 @@ public class WheelDrive {
 
     private SparkMaxPIDController m_pidController;
     private DutyCycleEncoder driveEncoder;
-    private AnalogEncoder absoluteEncoder;
+    
 
 
     // PID coefficients
-    public double kP = 0.1;
-    public double kI = 1;
-    public double kD = 1;
+    public double kP = 1;
+    public double kI = 0;
+    public double kD = 0;
     public double kIz = 0;
     public double kFF = 0;
     public double kMaxOutput = 1;
@@ -62,8 +62,8 @@ public class WheelDrive {
         m_pidController.setIZone(kIz);
         m_pidController.setFF(kFF);
         m_pidController.setOutputRange(kMinOutput, kMaxOutput);
-        m_pidController.setPositionPIDWrappingMaxInput(180);
-        m_pidController.setPositionPIDWrappingMinInput(-180);
+        m_pidController.setPositionPIDWrappingMaxInput(1);
+        m_pidController.setPositionPIDWrappingMinInput(-1);
        
         //m_pidController.setFeedbackDevice(null);
         //m_pidController.set
@@ -78,18 +78,17 @@ public class WheelDrive {
     }
     public void drive (double speed, double angle){
         // Sets the speed on the speed motor.
-        speedMotor.set(speed);
-        angle = angle *1;
+        speedMotor.set(0.5 * speed);
+    
         m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
-
-
     }
 
-    public void zeroEncoders(){
+    public void zeroEncoders(double offset){
         // private final FeedbackDevice absoluteEncoder = new FeedbackD
         
         //angleEncoder.setPosition(absoluteEncoder.getAbsolutePosition());
-        angleEncoder.setPosition(driveEncoder.getAbsolutePosition());
+        angleEncoder.setPosition(driveEncoder.getAbsolutePosition() + offset);
+    
     }   
     
     public double returnRelative(){
@@ -100,6 +99,10 @@ public class WheelDrive {
         return driveEncoder.getAbsolutePosition();
         //return absoluteEncoder.getAbsolutePosition();
         
+    }
+
+    public void invertDriveMotor(boolean isInverted){
+        speedMotor.setInverted(isInverted);
     }
 
 }

@@ -65,10 +65,16 @@ public class Robot extends TimedRobot {
     //AbsoluteEncoder.configAbsoluteSensorRange
     //AbsoluteEncoder.getAbsolutePosition();
     
-    /*backRight.zeroEncoders(0.3389);
+    backRight.zeroEncoders(0.3389);
     backLeft.zeroEncoders(0.7695);
     frontRight.zeroEncoders(0.0614);
-    frontLeft.zeroEncoders(0.8470);*/
+    frontLeft.zeroEncoders(0.8470);
+
+    frontRight.invertAngleMotor(false);
+    frontLeft.invertAngleMotor(false);
+    backRight.invertAngleMotor(false);
+    backLeft.invertAngleMotor(false);
+
     frontRight.invertDriveMotor(false);
     frontLeft.invertDriveMotor(true);
     backRight.invertDriveMotor(false);
@@ -86,8 +92,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     SmartDashboard.putNumber("backLeft relative encoder", backLeft.returnRelative());
     SmartDashboard.putNumber("backRight relative encoder", backRight.returnRelative());
-    SmartDashboard.putNumber("frontLeft relative encoder", frontRight.returnRelative());
-    SmartDashboard.putNumber("frontRight relative encoder", frontLeft.returnRelative());
+    SmartDashboard.putNumber("frontRight relative encoder", frontRight.returnRelative());
+    SmartDashboard.putNumber("frontLeft relative encoder", frontLeft.returnRelative());
+
     SmartDashboard.putNumber("backLeft AbsoluteEncoder", backLeft.returnabsolute());
     SmartDashboard.putNumber("backRight AbsoluteEncoder", backRight.returnabsolute());
     SmartDashboard.putNumber("frontLeft AbsoluteEncoder", frontLeft.returnabsolute());

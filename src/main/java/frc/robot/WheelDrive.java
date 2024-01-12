@@ -11,13 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.AnalogEncoder;
-/* import com.ctre.phoenix.sensors.CANCoder;
 
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;*/
-
-//import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 
 /** Add your docs here. */
@@ -27,7 +21,7 @@ public class WheelDrive {
     private RelativeEncoder angleEncoder;
 
     private SparkMaxPIDController m_pidController;
-    private DutyCycleEncoder driveEncoder;
+    private DutyCycleEncoder absoluteEncoder;
     
 
 
@@ -52,8 +46,7 @@ public class WheelDrive {
 
         this.angleEncoder = this.angleMotor.getEncoder();
         this.angleEncoder.setPositionConversionFactor(7.0/96);
-        //this.absoluteEncoder = new AnalogEncoder(encoderNumber);
-        this.driveEncoder = new DutyCycleEncoder(encoderNumber);
+        this.absoluteEncoder = new DutyCycleEncoder(encoderNumber);
 
         // set PID coefficients
         m_pidController.setP(kP);
@@ -64,6 +57,7 @@ public class WheelDrive {
         m_pidController.setOutputRange(kMinOutput, kMaxOutput);
         m_pidController.setPositionPIDWrappingMaxInput(1);
         m_pidController.setPositionPIDWrappingMinInput(-1);
+
        
         //m_pidController.setFeedbackDevice(null);
         //m_pidController.set
@@ -84,25 +78,21 @@ public class WheelDrive {
     }
 
     public void zeroEncoders(double offset){
-        // private final FeedbackDevice absoluteEncoder = new FeedbackD
-        
-        //angleEncoder.setPosition(absoluteEncoder.getAbsolutePosition());
-        angleEncoder.setPosition(driveEncoder.getAbsolutePosition() + offset);
-    
+        angleEncoder.setPosition(-1 * (absoluteEncoder.getAbsolutePosition() - offset));  
     }   
-    
+
     public double returnRelative(){
         return angleEncoder.getPosition();
     }
 
     public double returnabsolute(){
-        return driveEncoder.getAbsolutePosition();
-        //return absoluteEncoder.getAbsolutePosition();
-        
+        return absoluteEncoder.getAbsolutePosition(); 
     }
 
     public void invertDriveMotor(boolean isInverted){
         speedMotor.setInverted(isInverted);
     }
-
+    public void invertAngleMotor(boolean isInverted){
+        angleMotor.setInverted(isInverted);
+    }
 }

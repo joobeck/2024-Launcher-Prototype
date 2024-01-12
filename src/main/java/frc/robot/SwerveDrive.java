@@ -13,7 +13,7 @@ public class SwerveDrive {
     private WheelDrive backLeft;
     private WheelDrive frontRight;
     private WheelDrive frontLeft;
-
+    //dimensions between wheels center-to-center
     public final double length = 27.4;
     public final double width = 12.25;
 
@@ -30,21 +30,27 @@ public class SwerveDrive {
         y1 *= -1;
         
 
-        double a = x1 - x2 * (length / rotation);
-        double b = x1 + x2 * (length / rotation);
-        double c = y1 - x2 * (width / rotation);
-        double d = y1 + x2 * (width / rotation);
+        double a = x1 - x2 * (length / rotation); //back horizontal
+        double b = x1 + x2 * (length / rotation); //front horizontal
+        double c = y1 - x2 * (width / rotation);  //left vertical
+        double d = y1 + x2 * (width / rotation);  //right vertical
 
-        double backRightSpeed = Math.sqrt ((a * a) + (d * d));
-        double backLeftSpeed = Math.sqrt ((a * a) + (c * c));
-        double frontRightSpeed = Math.sqrt ((b * b) + (d * d));
-        double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));
+        /*We switched left and right(we could also have switched front and back)
+        * this change should turn the wheels the right way when the robot is trying to rotate
+        */
+        //Speed Values
+        double backRightSpeed = Math.sqrt ((a * a) + (c * c));
+        double backLeftSpeed = Math.sqrt ((a * a) + (d * d));
+        double frontRightSpeed = Math.sqrt ((b * b) + (c * c));
+        double frontLeftSpeed = Math.sqrt ((b * b) + (d * d));
+        //Angle Values
+        double backRightAngle = (Math.atan2(a, c) / Math.PI / 2); 
+        double backLeftAngle = (Math.atan2(a, d) / Math.PI / 2);
+        double frontRightAngle = (Math.atan2(b, c) / Math.PI / 2);
+        double frontLeftAngle = (Math.atan2(b, d) / Math.PI / 2);
+        
 
-        double backRightAngle = (Math.atan2(a, d) / Math.PI / 2);
-        double backLeftAngle = (Math.atan2(a, c) / Math.PI / 2);
-        double frontRightAngle = (Math.atan2(b, d) / Math.PI / 2);
-        double frontLeftAngle = (Math.atan2(b, c) / Math.PI / 2);
-        //
+
         backRight.drive(backRightSpeed, backRightAngle);
         backLeft.drive(backLeftSpeed, backLeftAngle);
         frontRight.drive(frontRightSpeed, frontRightAngle);
@@ -52,3 +58,4 @@ public class SwerveDrive {
     }
     
 }
+

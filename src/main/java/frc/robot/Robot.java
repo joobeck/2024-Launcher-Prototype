@@ -13,8 +13,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.SPI;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.Quaternion;
 
 import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.
@@ -39,6 +42,7 @@ public class Robot extends TimedRobot {
   //private final CANCoder AbsoluteEncoder = new CANCoder(0);
   //private WPI_CANCoder CANCoder = new 
 
+  AHRS gyro = new AHRS(SPI.Port.kMXP);
 
 
   // Joystick
@@ -50,6 +54,7 @@ public class Robot extends TimedRobot {
   private WheelDrive frontLeft = new WheelDrive(8, 7,3);
   private WheelDrive frontRight = new WheelDrive(6, 5,2);
   private SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -90,15 +95,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // Relative Encoders
     SmartDashboard.putNumber("backLeft relative encoder", backLeft.returnRelative());
     SmartDashboard.putNumber("backRight relative encoder", backRight.returnRelative());
     SmartDashboard.putNumber("frontRight relative encoder", frontRight.returnRelative());
     SmartDashboard.putNumber("frontLeft relative encoder", frontLeft.returnRelative());
-
+    // Absolute Encoders
     SmartDashboard.putNumber("backLeft AbsoluteEncoder", backLeft.returnabsolute());
     SmartDashboard.putNumber("backRight AbsoluteEncoder", backRight.returnabsolute());
     SmartDashboard.putNumber("frontLeft AbsoluteEncoder", frontLeft.returnabsolute());
     SmartDashboard.putNumber("frontRight AbsoluteEncoder", frontRight.returnabsolute());
+
+    // Gyro angle
+    SmartDashboard.putNumber("Yaw", gyro.getYaw());
+
   }
 
   /**
@@ -139,7 +149,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-  swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX());
+  swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), gyro.getYaw());
+
+
+
   }
 
   /** This function is called once when the robot is disabled. */

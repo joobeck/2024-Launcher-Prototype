@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 // convert angle here to angle elsewhere
 // check SparkMax CAN numbers
 
@@ -17,6 +18,15 @@ public class SwerveDrive {
     public final double length = 27.4;
     public final double width = 12.25;
 
+    // Gyro
+    double gyro_radians;
+    double gyro_degrees;
+    double temp;
+    double forward;
+    double strafe;
+    double rotation;
+
+
     // SwerveDrive constructor
     public SwerveDrive (WheelDrive backRight, WheelDrive backLeft, WheelDrive frontRight, WheelDrive frontLeft){
         this.backRight = backRight;
@@ -25,15 +35,42 @@ public class SwerveDrive {
         this.frontLeft = frontLeft;
     }
     // drive method
-    public void drive (double x1, double y1, double x2) {
-        double rotation = Math.sqrt((length * length) + (width * width));
-        y1 *= -1;
-        
+    public void drive (double x1, double y1, double x2, double gyroAngle) {
+        /*if (x2 > -0.01 && x2 < 0.01){
+           rotation = 0;
+        } else {
+            rotation = Math.sqrt((length * length) + (width * width));
+        }
 
-        double a = x1 - x2 * (length / rotation); //back horizontal
-        double b = x1 + x2 * (length / rotation); //front horizontal
-        double c = y1 - x2 * (width / rotation);  //left vertical
-        double d = y1 + x2 * (width / rotation);  //right vertical
+        if (y1 > -0.01 && y1 < 0.01) {
+            forward = 0;
+        } else {
+            forward = y1 * -1;
+        }
+
+        if (x1 > -0.01 && x1 < 0.01){
+            strafe = 0;
+        } else {
+            strafe = x1;
+        }*/
+
+        rotation = Math.sqrt((length * length) + (width * width));
+        forward = y1 * -1;
+        strafe = x1;
+
+        gyro_degrees = gyroAngle;
+        gyro_radians = gyro_degrees * Math.PI/180;
+        temp = forward * Math.cos(gyro_radians) + strafe * Math.sin(gyro_radians);
+        strafe = (forward * -1) * Math.sin(gyro_radians) + strafe * Math.cos(gyro_radians);
+        forward = temp;
+        
+        // Adjusts values to field orionted drive
+
+
+        double a = strafe - x2 * (length / rotation); //back horizontal
+        double b = strafe + x2 * (length / rotation); //front horizontal
+        double c = forward - x2 * (width / rotation);  //left vertical
+        double d = forward + x2 * (width / rotation);  //right vertical
 
         /*We switched left and right(we could also have switched front and back)
         * this change should turn the wheels the right way when the robot is trying to rotate

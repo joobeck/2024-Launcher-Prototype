@@ -55,8 +55,10 @@ public class WheelDrive {
         m_pidController.setIZone(kIz);
         m_pidController.setFF(kFF);
         m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+        
+        m_pidController.setPositionPIDWrappingEnabled(true);
         m_pidController.setPositionPIDWrappingMaxInput(1);
-        m_pidController.setPositionPIDWrappingMinInput(-1);
+        m_pidController.setPositionPIDWrappingMinInput(0);
 
        
         //m_pidController.setFeedbackDevice(null);

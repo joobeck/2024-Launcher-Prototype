@@ -144,13 +144,28 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    swerveDrive.setDesiredYaw(gyro.getYaw());
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-  swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), gyro.getYaw());
-
+    if (controller.getYButton()){
+      //North
+      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 0, gyro.getYaw());
+    } else if(controller.getAButton()){
+      //South
+      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 180, gyro.getYaw());
+    }else if(controller.getBButton()){
+      //East
+      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 90, gyro.getYaw());
+    } else if(controller.getXButton()){
+      //West
+      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), -90, gyro.getYaw());
+    } else {
+      swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), gyro.getYaw());
+    }
 
 
   }

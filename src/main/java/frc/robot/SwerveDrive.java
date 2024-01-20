@@ -28,6 +28,7 @@ public class SwerveDrive {
     double rotation;
     double desiredYaw = 0;
     double error;
+    double turning;
 
 
     // SwerveDrive constructor
@@ -56,13 +57,19 @@ public class SwerveDrive {
     // drive method
     public void drive (double x1, double y1, double x2, double gyroAngle) {
         rotation = Math.sqrt((length * length) + (width * width));
-
         if (x2 >= -0.01 && x2 <=0.01){
-           x2 = 0;
-        } else {
-            desiredYaw = gyroAngle + x2;
             error = desiredYaw - gyroAngle;
-            x2 = coerceToRange(error, -1, 1);
+            if (error >= -3 && error <= 3){
+                error = 0;
+            } 
+            turning = coerceToRange((error) * 0.02, -1, 1);
+        } else {
+            desiredYaw = gyroAngle + (x2 * 5);
+            error = desiredYaw - gyroAngle;
+            if (error >= -3 && error <= 3){
+                error = 0;
+            } 
+            turning = coerceToRange((error) * 0.1, -1, 1);
         }
 
         if (y1 >= -0.01 && y1 <= 0.01) {
@@ -89,10 +96,10 @@ public class SwerveDrive {
         forward = temp;
         
 
-        double a = strafe - x2 * (length / rotation); //back horizontal
-        double b = strafe + x2 * (length / rotation); //front horizontal
-        double c = forward - x2 * (width / rotation);  //left vertical
-        double d = forward + x2 * (width / rotation);  //right vertical
+        double a = strafe - turning * (length / rotation); //back horizontal
+        double b = strafe + turning * (length / rotation); //front horizontal
+        double c = forward - turning * (width / rotation);  //left vertical
+        double d = forward + turning * (width / rotation);  //right vertical
 
         /*We switched left and right(we could also have switched front and back)
         * this change should turn the wheels the right way when the robot is trying to rotate
@@ -114,14 +121,12 @@ public class SwerveDrive {
         frontLeft.drive(frontLeftSpeed, frontLeftAngle);
     }
 
-    // drive method
+   // drive method
     public void angleDrive (double x1, double y1, double desiredGyroAngle, double gyroAngle) {
         rotation = Math.sqrt((length * length) + (width * width));
-
-        double x2;
         desiredYaw = desiredGyroAngle;
-        error = desiredYaw - gyroAngle;
-        x2 = coerceToRange(error, -1, 1);
+        error = (desiredYaw - gyroAngle);
+        turning = coerceToRange((error * 0.01), -1, 1);
         
 
         if (y1 >= -0.01 && y1 <= 0.01) {
@@ -141,7 +146,7 @@ public class SwerveDrive {
         forward = y1 * -1;
         strafe = x1;*/
 
-         // Adjusts values to field oriented drive
+        // Adjusts values to field oriented drive
         gyro_degrees = gyroAngle;
         gyro_radians = gyro_degrees * Math.PI/180;
         temp = forward * Math.cos(gyro_radians) + strafe * Math.sin(gyro_radians);
@@ -149,10 +154,10 @@ public class SwerveDrive {
         forward = temp;
         
 
-        double a = strafe - x2 * (length / rotation); //back horizontal
-        double b = strafe + x2 * (length / rotation); //front horizontal
-        double c = forward - x2 * (width / rotation);  //left vertical
-        double d = forward + x2 * (width / rotation);  //right vertical
+        double a = strafe - turning * (length / rotation); //back horizontal
+        double b = strafe + turning * (length / rotation); //front horizontal
+        double c = forward - turning * (width / rotation);  //left vertical
+        double d = forward + turning * (width / rotation);  //right vertical
 
         /*We switched left and right(we could also have switched front and back)
         * this change should turn the wheels the right way when the robot is trying to rotate
@@ -179,6 +184,12 @@ public class SwerveDrive {
         desiredYaw = setDesiredYaw;
     }
 
+    public double returnDesiredYaw(){
+        return desiredYaw;
+        }
+    public double returnTurning(){
+        return turning;
+    }
     
 }
 

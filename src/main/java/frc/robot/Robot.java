@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.SPI;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.navx.frc.Quaternion;
 
@@ -109,6 +108,10 @@ public class Robot extends TimedRobot {
     // Gyro angle
     SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
+    //Drive method
+    SmartDashboard.putNumber("desiredYaw", swerveDrive.returnDesiredYaw());
+    SmartDashboard.putNumber("turning",swerveDrive.returnTurning() );
+
   }
 
   /**
@@ -151,6 +154,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    //swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), gyro.getYaw());
     if (controller.getYButton()){
       //North
       swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 0, gyro.getYaw());

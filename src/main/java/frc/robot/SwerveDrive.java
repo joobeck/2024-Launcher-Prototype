@@ -39,6 +39,12 @@ public class SwerveDrive {
         this.frontLeft = frontLeft;
     }
 
+    // Subtracts two angles
+    public double angleSubtractor (double firstAngle, double secondAngle) {
+        double result = (((firstAngle - secondAngle) + 180)%360) -180;
+        return result;
+
+    }
     // Coerces a value to range
     public double coerceToRange (double number, double min, double max){
         double coercedValue;
@@ -57,19 +63,33 @@ public class SwerveDrive {
     // drive method
     public void drive (double x1, double y1, double x2, double gyroAngle) {
         rotation = Math.sqrt((length * length) + (width * width));
+        
+       /*/ if ((x2 > 0.1) || (x2 < -0.1)){
+            desiredYaw = gyroAngle + (x2 * 10);       
+        }
+        
+        error = angleSubtractor(desiredYaw, gyroAngle);
+
+        if (error >= -3 && error <= 3){
+            error = 0;
+        }   
+        turning = coerceToRange((error) * 0.02, -0.5, 0.5);*/
+
         if (x2 >= -0.01 && x2 <=0.01){
-            error = desiredYaw - gyroAngle;
+            error = angleSubtractor(desiredYaw, gyroAngle);
             if (error >= -3 && error <= 3){
                 error = 0;
             } 
-            turning = coerceToRange((error) * 0.02, -1, 1);
-        } else {
+            turning = coerceToRange((error) * 0.03, -1, 1);
+        } 
+        
+        else {
             desiredYaw = gyroAngle + (x2 * 5);
-            error = desiredYaw - gyroAngle;
+            error = angleSubtractor(desiredYaw, gyroAngle);
             if (error >= -3 && error <= 3){
                 error = 0;
             } 
-            turning = coerceToRange((error) * 0.1, -1, 1);
+            turning = coerceToRange((error) * 0.5, -1, 1);
         }
 
         if (y1 >= -0.01 && y1 <= 0.01) {
@@ -114,74 +134,18 @@ public class SwerveDrive {
         double backLeftAngle = (Math.atan2(a, d) / Math.PI / 2);
         double frontRightAngle = (Math.atan2(b, c) / Math.PI / 2);
         double frontLeftAngle = (Math.atan2(b, d) / Math.PI / 2);
-        
+
+        // 
         backRight.drive(backRightSpeed, backRightAngle);
         backLeft.drive(backLeftSpeed, backLeftAngle);
         frontRight.drive(frontRightSpeed, frontRightAngle);
         frontLeft.drive(frontLeftSpeed, frontLeftAngle);
-    }
-
-   // drive method
-    public void angleDrive (double x1, double y1, double desiredGyroAngle, double gyroAngle) {
-        rotation = Math.sqrt((length * length) + (width * width));
-        desiredYaw = desiredGyroAngle;
-        error = (desiredYaw - gyroAngle);
-        turning = coerceToRange((error * 0.01), -1, 1);
         
-
-        if (y1 >= -0.01 && y1 <= 0.01) {
-            forward = 0;
-        } else {
-            forward = y1 * -1;
-        }
-
-
-        if (x1 >= -0.01 && x1 <= 0.01){
-            strafe = 0;
-        } else {
-            strafe = x1;
-        }
-
-        /*rotation = Math.sqrt((length * length) + (width * width));
-        forward = y1 * -1;
-        strafe = x1;*/
-
-        // Adjusts values to field oriented drive
-        gyro_degrees = gyroAngle;
-        gyro_radians = gyro_degrees * Math.PI/180;
-        temp = forward * Math.cos(gyro_radians) + strafe * Math.sin(gyro_radians);
-        strafe = (forward * -1) * Math.sin(gyro_radians) + strafe * Math.cos(gyro_radians);
-        forward = temp;
-        
-
-        double a = strafe - turning * (length / rotation); //back horizontal
-        double b = strafe + turning * (length / rotation); //front horizontal
-        double c = forward - turning * (width / rotation);  //left vertical
-        double d = forward + turning * (width / rotation);  //right vertical
-
-        /*We switched left and right(we could also have switched front and back)
-        * this change should turn the wheels the right way when the robot is trying to rotate
-        */
-        //Speed Values
-        double backRightSpeed = Math.sqrt ((a * a) + (c * c));
-        double backLeftSpeed = Math.sqrt ((a * a) + (d * d));
-        double frontRightSpeed = Math.sqrt ((b * b) + (c * c));
-        double frontLeftSpeed = Math.sqrt ((b * b) + (d * d));
-        //Angle Values
-        double backRightAngle = (Math.atan2(a, c) / Math.PI / 2); 
-        double backLeftAngle = (Math.atan2(a, d) / Math.PI / 2);
-        double frontRightAngle = (Math.atan2(b, c) / Math.PI / 2);
-        double frontLeftAngle = (Math.atan2(b, d) / Math.PI / 2);
-        
-        backRight.drive(backRightSpeed, backRightAngle);
-        backLeft.drive(backLeftSpeed, backLeftAngle);
-        frontRight.drive(frontRightSpeed, frontRightAngle);
-        frontLeft.drive(frontLeftSpeed, frontLeftAngle);
     }
 
     // 
-    public void setDesiredYaw(double setDesiredYaw){
-        desiredYaw = setDesiredYaw;
+    public void setDesiredYaw(double desiredGyroAngle){
+        desiredYaw = desiredGyroAngle;
     }
 
     public double returnDesiredYaw(){

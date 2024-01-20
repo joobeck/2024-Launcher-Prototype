@@ -157,16 +157,16 @@ public class Robot extends TimedRobot {
     //swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), gyro.getYaw());
     if (controller.getYButton()){
       //North
-      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 0, gyro.getYaw());
+      swerveDrive.setDesiredYaw(0);
     } else if(controller.getAButton()){
       //South
-      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 180, gyro.getYaw());
+      swerveDrive.setDesiredYaw(180);
     }else if(controller.getBButton()){
       //East
-      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), 90, gyro.getYaw());
+      swerveDrive.setDesiredYaw(90);;
     } else if(controller.getXButton()){
       //West
-      swerveDrive.angleDrive(controller.getLeftX(), controller.getLeftY(), -90, gyro.getYaw());
+      swerveDrive.setDesiredYaw(-90);;
     } else {
       swerveDrive.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), gyro.getYaw());
     }

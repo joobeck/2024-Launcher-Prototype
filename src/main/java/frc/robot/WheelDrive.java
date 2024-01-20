@@ -41,6 +41,9 @@ public class WheelDrive {
         
         this.angleMotor = new CANSparkMax(angleMotor, MotorType.kBrushless);
         this.speedMotor = new CANSparkMax(speedMotor, MotorType.kBrushless);
+
+        this.speedMotor.setClosedLoopRampRate(2);
+        this.angleMotor.setClosedLoopRampRate(0.3);    
        
         m_pidController = this.angleMotor.getPIDController();
 
@@ -75,8 +78,11 @@ public class WheelDrive {
     public void drive (double speed, double angle){
         // Sets the speed on the speed motor.
         speedMotor.set(0.5 * speed);
-    
-        m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        if (Math.abs(speed) < 0.1){
+            m_pidController.setReference(angleEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
+        } else {
+            m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        }
     }
 
     public void zeroEncoders(double offset){

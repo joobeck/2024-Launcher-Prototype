@@ -112,6 +112,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("desiredYaw", swerveDrive.returnDesiredYaw());
     SmartDashboard.putNumber("turning",swerveDrive.returnTurning() );
 
+
+    //
+    SmartDashboard.putNumber("desiredYaw", swerveDrive.returnDesiredYaw());
+    SmartDashboard.putNumber("currentAngle",backRight.returncurrentAngle());
+
   }
 
   /**

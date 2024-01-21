@@ -34,6 +34,11 @@ public class WheelDrive {
     public double kMaxOutput = 1;
     public double kMinOutput = -1;
     public double PositionConversionFactor = 1;
+
+    // Drive method 
+    double setPointAngle;
+    double setPointAngleFlipped;
+    double currentAngle;
    
     
     //consider changing variable names
@@ -75,14 +80,43 @@ public class WheelDrive {
         //this.angleMotor.getEncoder();        
 
     }
+
+    // Subtracts two angles
+    public double angleSubtractor (double firstAngle, double secondAngle) {
+        double result = (((firstAngle - secondAngle) + 0.5)%1) - 0.5;
+        return result;
+
+    }
+
     public void drive (double speed, double angle){
-        // Sets the speed on the speed motor.
-        speedMotor.set(0.5 * speed);
-        if (Math.abs(speed) < 0.1){
-            m_pidController.setReference(angleEncoder.getPosition(), CANSparkMax.ControlType.kPosition);
+        currentAngle = angleEncoder.getPosition();
+        speed = speed * 0.5;
+
+        setPointAngle = angleSubtractor(currentAngle, angle);
+        setPointAngleFlipped = angleSubtractor(currentAngle, angle + 0.5);
+
+        if (Math.abs(setPointAngle) < Math.abs(setPointAngleFlipped)){
+        
+            //if (Math.abs(speed) < 0.1){
+            if (false){
+                m_pidController.setReference(currentAngle, CANSparkMax.ControlType.kPosition);
+                speedMotor.set(speed);
+            } else {
+                m_pidController.setReference(currentAngle - setPointAngle, CANSparkMax.ControlType.kPosition);
+                speedMotor.set(speed);
+            }
         } else {
-            m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+            //if (Math.abs(speed) < 0.1){
+            if (false){
+                m_pidController.setReference(currentAngle, CANSparkMax.ControlType.kPosition);
+                speedMotor.set(-1 * speed);
+            } else {
+                m_pidController.setReference(currentAngle - setPointAngleFlipped, CANSparkMax.ControlType.kPosition);
+                speedMotor.set(-1 * speed);
+
+            }
         }
+        
     }
 
     public void zeroEncoders(double offset){
@@ -93,6 +127,15 @@ public class WheelDrive {
         return angleEncoder.getPosition();
     }
 
+    public double returnsetPointAngle(){
+        return setPointAngle;
+    }
+    public double returnsetPointAngleFlipped(){
+        return setPointAngleFlipped;
+    }
+     public double returncurrentAngle(){
+        return currentAngle;
+     }
     public double returnabsolute(){
         return absoluteEncoder.getAbsolutePosition(); 
     }

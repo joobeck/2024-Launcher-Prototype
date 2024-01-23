@@ -26,7 +26,7 @@ public class WheelDrive {
 
 
     // PID coefficients
-    public double kP = 1;
+    public double kP = 0.005;
     public double kI = 0;
     public double kD = 0;
     public double kIz = 0;
@@ -53,7 +53,7 @@ public class WheelDrive {
         m_pidController = this.angleMotor.getPIDController();
 
         this.angleEncoder = this.angleMotor.getEncoder();
-        this.angleEncoder.setPositionConversionFactor(7.0/96);
+        this.angleEncoder.setPositionConversionFactor((7.0/96) * 360);
         this.absoluteEncoder = new DutyCycleEncoder(encoderNumber);
 
         // set PID coefficients
@@ -65,8 +65,8 @@ public class WheelDrive {
         m_pidController.setOutputRange(kMinOutput, kMaxOutput);
         
         m_pidController.setPositionPIDWrappingEnabled(true);
-        m_pidController.setPositionPIDWrappingMaxInput(1);
-        m_pidController.setPositionPIDWrappingMinInput(0);
+        m_pidController.setPositionPIDWrappingMaxInput(180);
+        m_pidController.setPositionPIDWrappingMinInput(-180);
 
        
         //m_pidController.setFeedbackDevice(null);
@@ -83,7 +83,10 @@ public class WheelDrive {
 
     // Subtracts two angles
     public double angleSubtractor (double firstAngle, double secondAngle) {
-        double result = (((firstAngle - secondAngle) + 0.5)%1) - 0.5;
+       // 
+        double sign = Math.signum(firstAngle -secondAngle);
+        double result = (((firstAngle - secondAngle) + 180)%360) - 180;
+        result = result * sign;
         return result;
 
     }
@@ -93,25 +96,26 @@ public class WheelDrive {
         speed = speed * 0.5;
 
         setPointAngle = angleSubtractor(currentAngle, angle);
-        setPointAngleFlipped = angleSubtractor(currentAngle, angle + 0.5);
+        setPointAngleFlipped = angleSubtractor(currentAngle + 180, angle);
+
+        //m_pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        //speedMotor.set(speed);
 
         if (Math.abs(setPointAngle) < Math.abs(setPointAngleFlipped)){
         
-            //if (Math.abs(speed) < 0.1){
-            if (false){
+            if (Math.abs(speed) < 0.1){
                 m_pidController.setReference(currentAngle, CANSparkMax.ControlType.kPosition);
                 speedMotor.set(speed);
             } else {
-                m_pidController.setReference(currentAngle - setPointAngle, CANSparkMax.ControlType.kPosition);
+                m_pidController.setReference(angleSubtractor(currentAngle, setPointAngle), CANSparkMax.ControlType.kPosition);
                 speedMotor.set(speed);
             }
         } else {
-            //if (Math.abs(speed) < 0.1){
-            if (false){
+            if (Math.abs(speed) < 0.1){
                 m_pidController.setReference(currentAngle, CANSparkMax.ControlType.kPosition);
                 speedMotor.set(-1 * speed);
             } else {
-                m_pidController.setReference(currentAngle - setPointAngleFlipped, CANSparkMax.ControlType.kPosition);
+                m_pidController.setReference(angleSubtractor(currentAngle, setPointAngleFlipped), CANSparkMax.ControlType.kPosition);
                 speedMotor.set(-1 * speed);
 
             }
@@ -120,7 +124,7 @@ public class WheelDrive {
     }
 
     public void zeroEncoders(double offset){
-        angleEncoder.setPosition(-1 * (absoluteEncoder.getAbsolutePosition() - offset));  
+        angleEncoder.setPosition(-1 * (absoluteEncoder.getAbsolutePosition() * 360 - offset));  
     }   
 
     public double returnRelative(){

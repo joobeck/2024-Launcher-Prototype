@@ -69,10 +69,10 @@ public class Robot extends TimedRobot {
     //AbsoluteEncoder.configAbsoluteSensorRange
     //AbsoluteEncoder.getAbsolutePosition();
     
-    backRight.zeroEncoders(0.3389);
-    backLeft.zeroEncoders(0.7695);
-    frontRight.zeroEncoders(0.0614);
-    frontLeft.zeroEncoders(0.8470);
+    backRight.zeroEncoders(0.3389 * 360);
+    backLeft.zeroEncoders(0.7695 * 360);
+    frontRight.zeroEncoders(0.0614 * 360);
+    frontLeft.zeroEncoders(0.8470 * 360);
 
     frontRight.invertAngleMotor(false);
     frontLeft.invertAngleMotor(false);

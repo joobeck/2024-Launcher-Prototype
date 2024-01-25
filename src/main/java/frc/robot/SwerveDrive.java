@@ -80,16 +80,16 @@ public class SwerveDrive {
             if (error >= -3 && error <= 3){
                 error = 0;
             } 
-            turning = coerceToRange((error) * 0.03, -1, 1);
+            turning = coerceToRange((error) * 0.015, -1, 1);
         } 
         
         else {
-            desiredYaw = gyroAngle + (x2 * 5);
+            desiredYaw = gyroAngle + (x2 * 10);
             error = angleSubtractor(desiredYaw, gyroAngle);
             if (error >= -3 && error <= 3){
                 error = 0;
             } 
-            turning = coerceToRange((error) * 0.5, -1, 1);
+            turning = coerceToRange((error) * 0.06, -1, 1);
         }
 
         if (y1 >= -0.01 && y1 <= 0.01) {

@@ -85,7 +85,7 @@ public class WheelDrive {
     public double angleSubtractor (double firstAngle, double secondAngle) {
        // 
         double sign = Math.signum(firstAngle -secondAngle);
-        double result = (((firstAngle - secondAngle) + 180)%360) - 180;
+        double result = (((Math.abs(firstAngle - secondAngle)) + 180)%360) - 180;
         result = result * sign;
         return result;
 
@@ -128,7 +128,7 @@ public class WheelDrive {
     }   
 
     public double returnRelative(){
-        return angleEncoder.getPosition();
+        return angleEncoder.getPosition()%360;
     }
 
     public double returnsetPointAngle(){

@@ -15,6 +15,7 @@ public class Launcher {
     private static final String kRotate = "Rotate";
     private static final String kFullLaunch = "Full Launch";
     private static final String kRollingLaunch = "Rolling Launch";
+    private static final String kIntake = "Intake";
 
     public Launcher() {
     }
@@ -47,11 +48,19 @@ public class Launcher {
         bottomRightMotor.stop();
     }
 
+    public void intake() {
+        topLeftMotor.fullReverse();
+        bottomLeftMotor.stop();
+        topRightMotor.stop();
+        bottomRightMotor.fullForward();
+    }
+
     void addDashboardDisplays() {
         chooser.setDefaultOption(kFullStop, kFullStop);
         chooser.addOption(kRotate, kRotate);
         chooser.addOption(kFullLaunch, kFullLaunch);
         chooser.addOption(kRollingLaunch, kRollingLaunch);
+        chooser.addOption(kIntake, kIntake);
         SmartDashboard.putData("Launcher Options", chooser);
     }
 
@@ -70,6 +79,9 @@ public class Launcher {
                 break;
             case kRollingLaunch:
                 rollingLaunch();
+                break;
+            case kIntake:
+                intake();
                 break;
             case kFullStop:
             default:

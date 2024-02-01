@@ -8,4 +8,10 @@ public class Launcher {
 
     public Launcher() {
     }
+    public void periodicUpdate() {
+        topLeftMotor.updateDashboard("topLeftMotor");
+        bottomLeftMotor.updateDashboard("bottomLeftMotor");
+        topRightMotor.updateDashboard("topRightMotor");
+        bottomRightMotor.updateDashboard("bottomRightMotor");
+    }
 }
